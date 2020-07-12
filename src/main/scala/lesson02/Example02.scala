@@ -8,7 +8,8 @@ object Example02 {
   }
 
   def loadUsers(ids: List[Int]): Option[List[User]] = {
-    switcharoo(ids.map(loadUser))
+    ids.map(loadUser)
+    ???
   }
 
   def loadUser(id: Int): Option[User] = {
@@ -16,18 +17,4 @@ object Example02 {
     else Some(User(s"user $id"))
   }
 
-  def switcharoo[T](list: List[Option[T]]): Option[List[T]] = {
-    list match {
-      case maybeHead :: tail =>
-        maybeHead match {
-          case Some(head) =>
-            switcharoo(tail) match {
-              case Some(tailSwitched) => Some(head :: tailSwitched)
-              case None => None
-            }
-          case None => None
-        }
-      case Nil => Some(List.empty)
-    }
-  }
 }

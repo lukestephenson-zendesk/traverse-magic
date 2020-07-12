@@ -10,7 +10,8 @@ object Example03 {
   }
 
   def loadUsers(ids: List[Int]): Try[List[User]] = {
-    switcharoo(ids.map(loadUser))
+    ids.map(loadUser)
+    ???
   }
 
   def loadUser(id: Int): Try[User] = {
@@ -18,18 +19,4 @@ object Example03 {
     else Success(User(s"user $id"))
   }
 
-  def switcharoo[T](list: List[Try[T]]): Try[List[T]] = {
-    list match {
-      case maybeHead :: tail =>
-        maybeHead match {
-          case Success(head) =>
-            switcharoo(tail) match {
-              case Success(tailSwitched) => Success(head :: tailSwitched)
-              case Failure(t) => Failure(t)
-            }
-          case Failure(t) => Failure(t)
-        }
-      case Nil => Success(List.empty)
-    }
-  }
 }
