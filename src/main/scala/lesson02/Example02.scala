@@ -8,8 +8,8 @@ object Example02 {
   }
 
   def loadUsers(ids: List[Int]): Option[List[User]] = {
-    ids.map(loadUser)
-    ???
+    val users: List[Option[User]] = ids.map(loadUser)
+    switch(users)
   }
 
   def loadUser(id: Int): Option[User] = {
@@ -17,4 +17,16 @@ object Example02 {
     else Some(User(s"user $id"))
   }
 
+  def switch[T](list: List[Option[T]]): Option[List[T]] = {
+    list match {
+      case maybeHead :: tail =>
+        maybeHead match {
+          case Some(element) =>
+            val tailSwitch: Option[List[T]] = switch(tail)
+            tailSwitch.map(element :: _)
+          case None => None
+        }
+      case Nil => Some(List.empty)
+    }
+  }
 }

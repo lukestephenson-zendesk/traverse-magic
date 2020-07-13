@@ -10,13 +10,28 @@ object Example03 {
   }
 
   def loadUsers(ids: List[Int]): Try[List[User]] = {
-    ids.map(loadUser)
-    ???
+    val users: List[Try[User]] =ids.map(loadUser)
+    switch(users)
   }
 
   def loadUser(id: Int): Try[User] = {
-    if (id > 10) Failure(new RuntimeException("hello"))
+    if (id > 2) Failure(new RuntimeException("db password invalid"))
     else Success(User(s"user $id"))
   }
 
+  def switch[T](list: List[Try[T]]): Try[List[T]] = {
+    list match {
+      case maybeHead :: tail =>
+        maybeHead match {
+          case Success(element) =>
+            val tailSwitch: Try[List[T]] = switch(tail)
+            tailSwitch.map(element :: _)
+          case Failure(e) => Failure(e)
+        }
+      case Nil => Success(List.empty)
+    }
+  }
 }
+
+// List[Option[User]] => Option[List[User]]
+// List[F[User]] => F[List[User]]
